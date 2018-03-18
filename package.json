@@ -20,5 +20,6 @@
     "write-file-webpack-plugin": "3.4.2"
   },
   "dependencies": {
+    "js-yaml": "^3.11.0"
   }
 }

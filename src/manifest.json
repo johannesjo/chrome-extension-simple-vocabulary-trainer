@@ -14,13 +14,14 @@
     "128": "icon_128x128.png"
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'self'",
   "description": "Allows communication with jira and idle time tracking for super productivity inside the browser.",
   "version": "0.1.0",
   "content_scripts": [
   ],
   "permissions": [
     "<all_urls>",
-    "notifications"
+    "notifications",
+    "storage"
   ]
 }
