@@ -1,9 +1,9 @@
 {
-  "name": "super-productivity-chrome-extension",
+  "name": "chrome-extension-simple-vocabulary-trainer",
   "version": "0.0.1",
-  "description": "A boilerplate to chrome extension with webpack",
+  "description": "",
   "scripts": {
-    "build": "node utils/build.js && zip -r sp-ext.zip ./build",
+    "build": "node utils/build.js && zip -r ext.zip ./build",
     "start": "node utils/webserver.js"
   },
   "devDependencies": {
