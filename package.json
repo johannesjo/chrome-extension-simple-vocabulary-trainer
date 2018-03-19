@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-simple-vocabulary-trainer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "scripts": {
     "build": "node utils/build.js && zip -r ext.zip ./build",
