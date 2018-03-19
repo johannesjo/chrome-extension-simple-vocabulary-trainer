@@ -7,3 +7,22 @@ img {
     display: block;
     margin: auto;
 }
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input{
+    display: block;
+    width: 100%;
+}
+
+
+section {
+    margin-bottom: 15px;
+}
+
+.error{
+    color: red;
+}

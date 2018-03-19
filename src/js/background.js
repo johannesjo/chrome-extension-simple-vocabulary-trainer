@@ -1,12 +1,19 @@
 import '../img/icon_32x32.png'
 import '../img/icon_128x128.png'
+import { DEFAULT_INTERVAL, SETTINGS_KEY } from './config';
 
-const INTERVAL = 60 * 1000;
 let interval;
+let lastIntervalDuration;
 
 function getRandomKey(obj) {
   const keys = Object.keys(obj);
-  return keys[keys.length * Math.random() << 0];
+  const randomKey = keys[keys.length * Math.random() << 0];
+
+  if (randomKey === SETTINGS_KEY) {
+    return getRandomKey(obj);
+  } else {
+    return randomKey;
+  }
 }
 
 const NOTIFICATION_ID = 'NOTIFICATION_ID';
@@ -42,10 +49,20 @@ function close() {
   chrome.notifications.clear(NOTIFICATION_ID);
 }
 
-// Test for notification support.
-if (window.Notification) {
+function reInitInterval(intervalDuration) {
+  if (interval) {
+    clearInterval(interval);
+  }
+
   interval = setInterval(() => {
     show();
-  }, INTERVAL);
-  show();
+  }, intervalDuration || DEFAULT_INTERVAL);
 }
+
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.intervalUpdated) {
+    reInitInterval(request.intervalUpdated);
+  }
+});
+show();
+reInitInterval();
