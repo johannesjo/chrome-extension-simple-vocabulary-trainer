@@ -22,13 +22,13 @@ function show() {
   let title = 'No vocabulary yet';
   let msg = 'Click on the extension icon to change that.';
 
-  chrome.storage.sync.get(null, function(items) {
+  chrome.storage.sync.get(null, (items) => {
     const randomKey = getRandomKey(items);
     const voc = randomKey;
     const translation = items[randomKey];
 
-    title = voc;
-    msg = translation;
+    title = voc || 'Broken Vocabulary';
+    msg = translation || 'Broken Translation';
     chrome.notifications.create(NOTIFICATION_ID, {
       type: 'list',
       title: title,
