@@ -4,7 +4,10 @@
 
 [Download from the chrome store](https://chrome.google.com/webstore/detail/simple-vocabulary-trainer/gpbkfeonfeclpaleaiepgeejnjogpidg)
 
-Simple vocabulary trainer using chrome notifications. Uses simple yml to remind you in a given interval of your vocabulary.
+Simple vocabulary trainer using chrome notifications. Uses a custom vocabulary list to remind you in a given interval of your vocabulary.
+
+## how it works
+You define a custom vocabulary list. The browser will send you little notifications with a random entry every X seconds, letting you practise a little while you're doing something else.  
 
 ## getting started
 1. [Download from the chrome store](https://chrome.google.com/webstore/detail/simple-vocabulary-trainer/gpbkfeonfeclpaleaiepgeejnjogpidg)
