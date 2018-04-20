@@ -6,7 +6,7 @@
 
 Simple vocabulary trainer using chrome notifications. Uses simple yml to remind you in a given interval of your vocabulary.
 
-## setup
+## getting started
 1. [Download from the chrome store](https://chrome.google.com/webstore/detail/simple-vocabulary-trainer/gpbkfeonfeclpaleaiepgeejnjogpidg)
 2. Click on the icon
 3. Paste your Vocabulary into the textarea.
