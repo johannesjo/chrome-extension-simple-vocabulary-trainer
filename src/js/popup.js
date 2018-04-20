@@ -28,7 +28,9 @@ function updateVocabulary() {
     doc[SETTINGS_KEY] = {
       intervalDuration: getInterValDurationParsedForStorage(),
     };
-    chrome.storage.sync.set(doc, function() {
+
+    // update doc and notify about storage being updated
+    chrome.storage.sync.set(doc, () => {
       chrome.runtime.sendMessage({ intervalUpdated: getInterValDurationParsedForStorage() });
     });
   }

@@ -1,9 +1,13 @@
 import '../img/icon_32x32.png'
 import '../img/icon_128x128.png'
 import { DEFAULT_INTERVAL, LOCKED_KEYS, SETTINGS_KEY } from './config';
+import { FAVORITES_KEY } from './config';
+
+const log = console.log;
 
 let showInterval;
 let lastIntervalDuration;
+let lastNotification;
 
 function getRandomKey(obj) {
   const keys = Object.keys(obj);
@@ -24,27 +28,41 @@ function show() {
 
   chrome.storage.sync.get(null, (items) => {
     const settings = items[SETTINGS_KEY];
-
     if (settings && settings.intervalDuration !== lastIntervalDuration) {
       reInitInterval(settings.intervalDuration);
     }
 
-    const randomKey = getRandomKey(items);
-    const voc = randomKey;
-    const translation = items[randomKey];
+    let voc;
+    let translation;
+
+    // every one of three should be a favorite if there are any
+    const favorites = items[FAVORITES_KEY];
+    const isShowFavorite = (Math.floor((Math.random() * 3) + 1) === 1 && favorites && Object.keys(favorites).length > 0);
+    if (isShowFavorite) {
+      const randomKey = getRandomKey(favorites);
+      voc = randomKey;
+      translation = favorites[randomKey];
+    } else {
+      const randomKey = getRandomKey(items);
+      voc = randomKey;
+      translation = items[randomKey];
+    }
+
+    lastNotification = {};
+    lastNotification[voc] = translation;
 
     title = voc || 'Broken Vocabulary';
     msg = translation || 'Broken Translation';
     chrome.notifications.create(NOTIFICATION_ID, {
       type: 'list',
-      title: title,
+      title: (isShowFavorite ? '❤ ' : '') + title,
       message: '',
       iconUrl: './icon_32x32.png',
       items: [
         { title: title, message: msg },
       ],
       buttons: [{
-        title: 'Add to favorites',
+        title: `${isShowFavorite ? 'Remove from' : 'Add to'} favorites`,
       }, {
         title: 'Mute for 1 hour',
       }]
@@ -62,10 +80,30 @@ chrome.notifications.onButtonClicked.addListener((notificationId, btnIdx) => {
 
   if (notificationId === NOTIFICATION_ID) {
     if (btnIdx === 0) {
+      chrome.storage.sync.get(FAVORITES_KEY, (favoritesWrapperObj) => {
+        if (favoritesWrapperObj) {
+          const vocabs = favoritesWrapperObj[FAVORITES_KEY];
+          const newVocabKey = Object.keys(lastNotification)[0];
+          if (vocabs[newVocabKey]) {
+            // delete
+            delete vocabs[newVocabKey];
+            log('Delete:', newVocabKey);
+          } else {
+            // add
+            favoritesWrapperObj[FAVORITES_KEY] = Object.assign(lastNotification, favoritesWrapperObj[FAVORITES_KEY]);
+            log('Add:', newVocabKey);
+          }
 
+        } else {
+          const obj = {};
+          obj[FAVORITES_KEY] = lastNotification;
+          favoritesWrapperObj = obj;
+        }
+        chrome.storage.sync.set(favoritesWrapperObj);
+      });
     } else if (btnIdx === 1) {
       const oneHour = 60 * 60 * 1000;
-      console.log(`Muting for ${oneHour} milliseconds`);
+      log(`Muting for ${oneHour} milliseconds`);
       reInitInterval(oneHour);
     }
   }
