@@ -1,13 +1,17 @@
 import "../css/popup.css";
 import yml from 'js-yaml';
 import { DEFAULT_INTERVAL, SETTINGS_KEY } from './config';
+import { FAVORITES_KEY } from './config';
 
 const area = document.getElementsByTagName('textarea')[0];
 const timeInput = document.getElementById('interval');
 const errorEl = document.getElementById('error');
 
 chrome.storage.sync.get(/* String or Array */null, function(items) {
-  const str = yml.safeDump(items);
+  const vocab = Object.assign({}, items);
+  delete vocab[SETTINGS_KEY];
+  delete vocab[FAVORITES_KEY];
+  const str = yml.safeDump(vocab);
   area.value = str;
   timeInput.value = (items[SETTINGS_KEY].intervalDuration || DEFAULT_INTERVAL) / 1000;
 });
