@@ -11,8 +11,7 @@ chrome.storage.sync.get(/* String or Array */null, function(items) {
   const vocab = Object.assign({}, items);
   delete vocab[SETTINGS_KEY];
   delete vocab[FAVORITES_KEY];
-  const str = yml.safeDump(vocab);
-  area.value = str;
+  area.value = yml.safeDump(vocab);
   timeInput.value = (items[SETTINGS_KEY].intervalDuration || DEFAULT_INTERVAL) / 1000;
 });
 
