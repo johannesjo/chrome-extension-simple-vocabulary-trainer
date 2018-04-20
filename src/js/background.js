@@ -1,15 +1,15 @@
 import '../img/icon_32x32.png'
 import '../img/icon_128x128.png'
-import { DEFAULT_INTERVAL, SETTINGS_KEY } from './config';
+import { DEFAULT_INTERVAL, LOCKED_KEYS, SETTINGS_KEY } from './config';
 
-let interval;
+let showInterval;
 let lastIntervalDuration;
 
 function getRandomKey(obj) {
   const keys = Object.keys(obj);
   const randomKey = keys[keys.length * Math.random() << 0];
 
-  if (randomKey === SETTINGS_KEY) {
+  if (LOCKED_KEYS.indexOf(randomKey) > -1) {
     return getRandomKey(obj);
   } else {
     return randomKey;
@@ -23,6 +23,12 @@ function show() {
   let msg = 'Click on the extension icon to change that.';
 
   chrome.storage.sync.get(null, (items) => {
+    const settings = items[SETTINGS_KEY];
+
+    if (settings && settings.intervalDuration !== lastIntervalDuration) {
+      reInitInterval(settings.intervalDuration);
+    }
+
     const randomKey = getRandomKey(items);
     const voc = randomKey;
     const translation = items[randomKey];
@@ -36,27 +42,50 @@ function show() {
       iconUrl: './icon_32x32.png',
       items: [
         { title: title, message: msg },
-      ]
+      ],
+      buttons: [{
+        title: 'Add to favorites',
+      }, {
+        title: 'Mute for 1 hour',
+      }]
     });
 
+    // auto close after 10 seconds, which is our min interval
     setTimeout(() => {
-      chrome.notifications.onClicked.addListener(close);
+      close();
     }, 10 * 1000);
   });
 }
 
-function close() {
-  chrome.notifications.clear(NOTIFICATION_ID);
+chrome.notifications.onClicked.addListener(close);
+chrome.notifications.onButtonClicked.addListener((notificationId, btnIdx) => {
+
+  if (notificationId === NOTIFICATION_ID) {
+    if (btnIdx === 0) {
+
+    } else if (btnIdx === 1) {
+      const oneHour = 60 * 60 * 1000;
+      console.log(`Muting for ${oneHour} milliseconds`);
+      reInitInterval(oneHour);
+    }
+  }
+});
+
+function close(notificationId) {
+  if (notificationId === NOTIFICATION_ID) {
+    chrome.notifications.clear(NOTIFICATION_ID);
+  }
 }
 
 function reInitInterval(intervalDuration) {
-  if (interval) {
-    clearInterval(interval);
+  if (showInterval) {
+    clearInterval(showInterval);
   }
 
-  interval = setInterval(() => {
+  showInterval = setInterval(() => {
     show();
   }, intervalDuration || DEFAULT_INTERVAL);
+  lastIntervalDuration = intervalDuration;
 }
 
 chrome.runtime.onMessage.addListener((request) => {

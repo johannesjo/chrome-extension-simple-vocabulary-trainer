@@ -1,2 +1,5 @@
 export const SETTINGS_KEY = 'SETTINGS';
+export const FAVORITES_KEY = 'FAVORITES';
+
+export const LOCKED_KEYS = [SETTINGS_KEY, FAVORITES_KEY];
 export const DEFAULT_INTERVAL = 60 * 1000;
