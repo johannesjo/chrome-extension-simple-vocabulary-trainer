@@ -70,7 +70,7 @@ function show() {
 
     // auto close after 10 seconds, which is our min interval
     setTimeout(() => {
-      close();
+      close(NOTIFICATION_ID);
     }, 10 * 1000);
   });
 }
@@ -106,6 +106,8 @@ chrome.notifications.onButtonClicked.addListener((notificationId, btnIdx) => {
       log(`Muting for ${oneHour} milliseconds`);
       reInitInterval(oneHour);
     }
+
+    close(NOTIFICATION_ID);
   }
 });
 
