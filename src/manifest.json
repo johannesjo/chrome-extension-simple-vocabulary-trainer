@@ -20,6 +20,7 @@
   "permissions": [
     "<all_urls>",
     "notifications",
-    "storage"
+    "storage",
+    "idle"
   ]
 }

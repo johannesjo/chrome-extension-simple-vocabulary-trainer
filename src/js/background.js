@@ -8,6 +8,7 @@ const log = console.log;
 let showInterval;
 let lastIntervalDuration;
 let lastNotification;
+let isIdle = false;
 
 function getRandomKey(obj) {
   const keys = Object.keys(obj);
@@ -123,7 +124,9 @@ function reInitInterval(intervalDuration) {
   }
 
   showInterval = setInterval(() => {
-    show();
+    if (!isIdle) {
+      show();
+    }
   }, intervalDuration || DEFAULT_INTERVAL);
   lastIntervalDuration = intervalDuration;
 }
@@ -133,5 +136,11 @@ chrome.runtime.onMessage.addListener((request) => {
     reInitInterval(request.intervalUpdated);
   }
 });
+
+chrome.idle.onStateChanged.addListener((idleState) => {
+  isIdle = (idleState !== 'active');
+});
+chrome.idle.setDetectionInterval(15);
+
 show();
 reInitInterval();
